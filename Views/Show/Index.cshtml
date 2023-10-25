@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    List<Show> showList = new CinemaContext().Shows.ToList();
+    var user = Context.Session.GetString("user");
+}
+
+
+<table id="datatable" class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>ShowId</th>
+      <th>RoomId</th>
+      <th>FilmId</th>
+      <th>ShowDate</th>
+      <th>Price</th>
+      <th>Status</th>
+      <th>Slot</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @foreach (var show in showList)
+    {
+        <tr>
+            <td>@show.ShowId</td>
+            <td>@show.RoomId</td>
+            <td>@show.FilmId</td>
+            <td>@show.ShowDate</td>
+            <td>@show.Price</td>
+            <td>@show.Status</td>
+            <td>@show.Slot</td>
+            <td>
+                    <a asp-page="/Bookings/Index" asp-route-id="@show.ShowId">Bookings</a>
+                @if (user != null)
+                {
+                    <a asp-page="/Bookings/Index?id=@show.ShowId">Edit</a>
+                    <a asp-page="/Bookings/Index?id=@show.ShowId">Details</a>
+                    <a asp-page="/Bookings/Index?id=@show.ShowId">Delete</a>
+                }
+                else
+                {
+
+                }
+            </td>
+            
+        </tr>
+    }
+  </tbody>
+
+</table>
+
