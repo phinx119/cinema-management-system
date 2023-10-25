@@ -1,11 +1,45 @@
 ﻿@model IEnumerable<PRN_ASG3.Models.Show>
-
+@using PRN_ASG3.Models;
 @{
     ViewData["Title"] = "Index";
     var user = Context.Session.GetString("user");
+    Show show = new Show();
 }
 
 <h1>Index</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@show.ShowDate" class="control-label"></label>
+                <input asp-for="@show.ShowDate" type="date" class="form-control" name="showDate" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@show.RoomId" class="control-label"></label>
+                <select asp-for ="@show.RoomId" class="form-control" name="roomId">
+                    @foreach (Room r in ViewBag.Rooms)
+                    {
+                        <option value="@r.RoomId">@r.Name</option>                        
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="@show.FilmId" class="control-label"></label>
+                <select asp-for="@show.FilmId" class="form-control" name="filmId">
+                    @foreach (Film f in ViewBag.Films)
+                    {
+                        <option value="@f.FilmId">@f.Title</option>
+                    }
+                </select>
+            </div>            
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -14,22 +48,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RoomId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FilmId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ShowDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model.Slot)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Slot)
+                @Html.DisplayNameFor(model => model.RoomId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FilmId)
             </th>
             <th></th>
         </tr>
@@ -38,22 +69,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.RoomId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FilmId)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ShowDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @Html.DisplayFor(modelItem => item.Slot)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Slot)
+                @Html.DisplayFor(modelItem => item.RoomId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FilmId)
             </td>
             <td>
                 <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.ShowId">Bookings</a>
