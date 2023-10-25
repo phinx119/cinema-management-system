@@ -1,53 +1,70 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-    List<Show> showList = new CinemaContext().Shows.ToList();
+﻿@model IEnumerable<PRN_ASG3.Models.Show>
+
+@{
+    ViewData["Title"] = "Index";
     var user = Context.Session.GetString("user");
 }
 
+<h1>Index</h1>
 
-<table id="datatable" class="table table-striped">
-
-  <thead>
-    <tr>
-      <th>ShowId</th>
-      <th>RoomId</th>
-      <th>FilmId</th>
-      <th>ShowDate</th>
-      <th>Price</th>
-      <th>Status</th>
-      <th>Slot</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    @foreach (var show in showList)
-    {
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
         <tr>
-            <td>@show.ShowId</td>
-            <td>@show.RoomId</td>
-            <td>@show.FilmId</td>
-            <td>@show.ShowDate</td>
-            <td>@show.Price</td>
-            <td>@show.Status</td>
-            <td>@show.Slot</td>
-            <td>
-                    <a asp-page="/Bookings/Index" asp-route-id="@show.ShowId">Bookings</a>
-                @if (user != null)
-                {
-                    <a asp-page="/Bookings/Index?id=@show.ShowId">Edit</a>
-                    <a asp-page="/Bookings/Index?id=@show.ShowId">Details</a>
-                    <a asp-page="/Bookings/Index?id=@show.ShowId">Delete</a>
-                }
-                else
-                {
-
-                }
-            </td>
-            
+            <th>
+                @Html.DisplayNameFor(model => model.RoomId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FilmId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShowDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slot)
+            </th>
+            <th></th>
         </tr>
-    }
-  </tbody>
-
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoomId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FilmId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShowDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Slot)
+            </td>
+            <td>
+                <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.ShowId">Bookings</a>
+                    @if (user!=null)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.ShowId"> | Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.ShowId"> | Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.ShowId"> | Delete</a>
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
 </table>
-

@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using PRN_ASG3.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,8 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Set the session timeout.
 });
+
+builder.Services.AddDbContext<CinemaContext>();
 
 var app = builder.Build();
 
