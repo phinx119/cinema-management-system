@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PRN_ASG3.Models;
 
 namespace PRN_ASG3.Controllers
@@ -19,11 +20,45 @@ namespace PRN_ASG3.Controllers
         }
 
         // GET: Show
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-              return _context.Shows != null ? 
-                          View(await _context.Shows.ToListAsync()) :
-                          Problem("Entity set 'CinemaContext.Shows'  is null.");
+            if (_context.Shows != null && _context.Rooms != null && _context.Films != null)
+            {
+                List<Show> shows = _context.Shows.ToList();
+                List<Room> rooms = _context.Rooms.ToList();
+                List<Film> films = _context.Films.ToList();
+                ViewBag.Rooms = rooms;
+                ViewBag.Films = films;
+                return View(shows);
+            }
+            else
+            {
+                return Problem("Entity set 'CinemaContext.Shows' is null.");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Index(Show searchShow)
+        {
+            if (_context.Shows != null)
+            {
+                // Filter the list of shows based on the provided parameters.
+                List<Show> shows = _context.Shows
+                    .Where(show => show.ShowDate == searchShow.ShowDate &&
+                           show.RoomId == searchShow.RoomId &&
+                           show.FilmId == searchShow.FilmId)
+                    .ToList();
+                List<Room> rooms = _context.Rooms.ToList();
+                List<Film> films = _context.Films.ToList();
+                ViewBag.Rooms = rooms;
+                ViewBag.Film = films;
+                return View(shows);
+            }
+            else
+            {
+                return Problem("Entity set 'CinemaContext.Shows' is null.");
+            }
         }
 
         // GET: Show/Details/5
