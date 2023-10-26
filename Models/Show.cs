@@ -13,4 +13,11 @@ namespace PRN_ASG3.Models
         public bool? Status { get; set; }
         public int? Slot { get; set; }
     }
+
+    public class MutipleJoinClass
+    {
+        public Show show { get; set; }
+        public Room room { get; set; }
+        public Film film { get; set; }
+    }
 }

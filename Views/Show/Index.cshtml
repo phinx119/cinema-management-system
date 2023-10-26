@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PRN_ASG3.Models.Show>
+﻿@model IEnumerable<PRN_ASG3.Models.MutipleJoinClass>
 @using PRN_ASG3.Models;
 @{
     ViewData["Title"] = "Index";
@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="@show.ShowDate" class="control-label"></label>
-                <input asp-for="@show.ShowDate" type="date" class="form-control" name="showDate" />
+                <input asp-for="@show.ShowDate" type="date" class="form-control" name="showDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
             </div>
             <div class="form-group">
                 <label asp-for="@show.RoomId" class="control-label"></label>
@@ -48,19 +48,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ShowDate)
+                @Html.DisplayNameFor(model => model.show.ShowDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.show.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Slot)
+                @Html.DisplayNameFor(model => model.show.Slot)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RoomId)
+                @Html.DisplayNameFor(model => model.room.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FilmId)
+                @Html.DisplayNameFor(model => model.film.Title)
             </th>
             <th></th>
         </tr>
@@ -69,27 +69,27 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ShowDate)
+                @Html.DisplayFor(modelItem => item.show.ShowDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => item.show.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Slot)
+                @Html.DisplayFor(modelItem => item.show.Slot)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RoomId)
+                @Html.DisplayFor(modelItem => item.room.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FilmId)
+                @Html.DisplayFor(modelItem => item.film.Title)
             </td>
             <td>
-                <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.ShowId">Bookings</a>
+                <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.show.ShowId">Bookings</a>
                     @if (user!=null)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.ShowId"> | Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.ShowId"> | Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.ShowId"> | Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.show.ShowId"> | Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.show.ShowId"> | Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.show.ShowId"> | Delete</a>
                     }
             </td>
         </tr>

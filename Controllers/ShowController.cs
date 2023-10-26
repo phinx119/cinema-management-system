@@ -19,6 +19,26 @@ namespace PRN_ASG3.Controllers
             _context = context;
         }
 
+        public void getList(List<Show> shows)
+        {
+            List<Room> rooms = _context.Rooms.ToList();
+            List<Film> films = _context.Films.ToList();
+
+            ViewData["JoinShow"] = from s in shows
+                                   join r in rooms on s.RoomId equals r.RoomId into joinRoom
+                                   from r in joinRoom.DefaultIfEmpty()
+                                   join f in films on s.FilmId equals f.FilmId into joinFilm
+                                   from f in joinFilm.DefaultIfEmpty()
+                                   select new MutipleJoinClass
+                                   {
+                                       show = s,
+                                       room = r,
+                                       film = f
+                                   };
+            ViewBag.Rooms = rooms;
+            ViewBag.Films = films;
+        }
+
         // GET: Show
         [HttpGet]
         public IActionResult Index()
@@ -26,11 +46,9 @@ namespace PRN_ASG3.Controllers
             if (_context.Shows != null && _context.Rooms != null && _context.Films != null)
             {
                 List<Show> shows = _context.Shows.ToList();
-                List<Room> rooms = _context.Rooms.ToList();
-                List<Film> films = _context.Films.ToList();
-                ViewBag.Rooms = rooms;
-                ViewBag.Films = films;
-                return View(shows);
+                getList(shows);
+
+                return View(ViewData["JoinShow"]);
             }
             else
             {
@@ -49,11 +67,9 @@ namespace PRN_ASG3.Controllers
                            show.RoomId == searchShow.RoomId &&
                            show.FilmId == searchShow.FilmId)
                     .ToList();
-                List<Room> rooms = _context.Rooms.ToList();
-                List<Film> films = _context.Films.ToList();
-                ViewBag.Rooms = rooms;
-                ViewBag.Film = films;
-                return View(shows);
+                getList(shows);
+
+                return View(ViewData["JoinShow"]);
             }
             else
             {
