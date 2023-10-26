@@ -11,4 +11,5 @@ namespace PRN_ASG3.Models
         public string? SeatStatus { get; set; }
         public decimal? Amount { get; set; }
     }
+
 }
