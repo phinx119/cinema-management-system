@@ -10,6 +10,8 @@ namespace PRN_ASG3.Models
         public string? Name { get; set; }
         public string? SeatStatus { get; set; }
         public decimal? Amount { get; set; }
+
+        public Show Show { get { return new CinemaContext().Shows.Find(ShowId); } }
     }
 
 }
