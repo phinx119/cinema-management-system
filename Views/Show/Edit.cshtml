@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var editShow = ViewBag.EditShow as PRN_ASG3.Models.Show;
 }
 
 <h1>Edit</h1>
@@ -10,40 +11,35 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="editform">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ShowId" />
             <div class="form-group">
-                <label asp-for="RoomId" class="control-label"></label>
-                <input asp-for="RoomId" class="form-control" />
-                <span asp-validation-for="RoomId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="FilmId" class="control-label"></label>
-                <input asp-for="FilmId" class="form-control" />
+                <select asp-for="FilmId" class="form-control" id="film">
+                    @foreach (Film f in ViewBag.Films)
+                    {
+                        <option value="@f.FilmId">@f.Title</option>
+                    }
+                </select>
                 <span asp-validation-for="FilmId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ShowDate" class="control-label"></label>
-                <input asp-for="ShowDate" class="form-control" />
-                <span asp-validation-for="ShowDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <input asp-for="Price" class="form-control" id="price" value="@String.Format("{0:0.00}", editShow.Price)" />
+                <span asp-validation-for="Price" class="text-danger" id="pricealert"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Slot" class="control-label"></label>
-                <input asp-for="Slot" class="form-control" />
+                <select asp-for="Slot" class="form-control" id="slot">
+                    @foreach (int s in ViewBag.Slot)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
                 <span asp-validation-for="Slot" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -53,6 +49,30 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    var priceInput = document.getElementById('price');
+    var editForm = document.getElementById('editform');
+    var priceValidationSpan = document.getElementById('pricealert');
+
+    priceInput.addEventListener('blur', function () {
+        var price = parseFloat(this.value);
+
+        if (isNaN(price) || price < 0 || price > 999999) {
+            priceValidationSpan.textContent = 'Price must be from 0 to 999,999.';
+            editForm.onsubmit = function (event) {
+                event.preventDefault();
+            };
+        } else {
+            priceValidationSpan.textContent = '';
+            editForm.onsubmit = null;
+        }
+    });
+
+    document.getElementById('film').selectedValue = @editShow.FilmId;
+    document.getElementById('slot').selectedValue = @editShow.Slot;
+
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

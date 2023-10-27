@@ -80,17 +80,27 @@ namespace PRN_ASG3.Controllers
         // GET: Show/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Shows == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var show = await _context.Shows
-                .FirstOrDefaultAsync(m => m.ShowId == id);
+                .FirstOrDefaultAsync(s => s.ShowId == id);
+
             if (show == null)
             {
                 return NotFound();
             }
+
+            // Load the related Film information separately
+            var film = await _context.Films.FirstOrDefaultAsync(f => f.FilmId == show.FilmId);
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == show.RoomId);
+
+            // You can use ViewData to pass the Film data to the view
+            ViewData["show"] = show;
+            ViewData["film"] = film;
+            ViewData["room"] = room;
 
             return View(show);
         }
@@ -98,6 +108,21 @@ namespace PRN_ASG3.Controllers
         // GET: Show/Create
         public IActionResult Create()
         {
+            DateTime currentDate = DateTime.Now.Date;
+
+            List<Film> films = _context.Films.ToList();
+            var slotsForCurrentDate = _context.Shows
+                .Where(show => show.ShowDate.HasValue && 
+                show.ShowDate.Value.Date == currentDate.Date && 
+                show.RoomId == 1)
+                .Select(show => show.Slot)
+                .ToList();
+
+            List<int> allSlots = Enumerable.Range(1, 9).ToList();
+            List<int> emptySlots = allSlots.Where(slot => !slotsForCurrentDate.Contains(slot)).ToList();
+
+            ViewBag.Films = films;
+            ViewBag.Slot = emptySlots;
             return View();
         }
 
@@ -106,15 +131,14 @@ namespace PRN_ASG3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ShowId,RoomId,FilmId,ShowDate,Price,Status,Slot")] Show show)
+        public IActionResult Create(Show newShow)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(show);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(show);
+            newShow.ShowDate = DateTime.Now;
+            newShow.RoomId = 1;
+            _context.Shows.Add(newShow);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Show/Edit/5
@@ -125,63 +149,86 @@ namespace PRN_ASG3.Controllers
                 return NotFound();
             }
 
-            var show = await _context.Shows.FindAsync(id);
-            if (show == null)
+            var editShow = await _context.Shows.FindAsync(id);
+            if (editShow == null)
             {
                 return NotFound();
             }
-            return View(show);
+
+            DateTime currentDate = DateTime.Now.Date;
+
+            List<Film> films = _context.Films.ToList();
+            var slotsForCurrentDate = _context.Shows
+                .Where(show => show.ShowDate.HasValue &&
+                show.ShowDate.Value.Date == editShow.ShowDate &&
+                show.Slot != editShow.Slot &&
+                show.RoomId == 1)
+                .Select(show => show.Slot)
+                .ToList();
+
+            List<int> allSlots = Enumerable.Range(1, 9).ToList();
+            List<int> emptySlots = allSlots.Where(slot => !slotsForCurrentDate.Contains(slot)).ToList();
+
+            ViewBag.Films = films;
+            ViewBag.Slot = emptySlots;
+            ViewBag.EditShow = editShow;
+
+            return View(editShow);
         }
 
-        // POST: Show/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ShowId,RoomId,FilmId,ShowDate,Price,Status,Slot")] Show show)
+        public async Task<IActionResult> Edit(int id, [Bind("ShowId,FilmId,Price,Slot")] Show show)
         {
             if (id != show.ShowId)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            else
             {
-                try
+                var existingShow = _context.Shows.Find(show.ShowId);
+                if (existingShow != null)
                 {
-                    _context.Update(show);
+                    // Update the properties that can be modified
+                    existingShow.FilmId = show.FilmId;
+                    existingShow.Price = show.Price;
+                    existingShow.Slot = show.Slot;
+
+                    _context.Update(existingShow);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ShowExists(show.ShowId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(show);
         }
 
         // GET: Show/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Shows == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var show = await _context.Shows
-                .FirstOrDefaultAsync(m => m.ShowId == id);
+                .FirstOrDefaultAsync(s => s.ShowId == id);
+
             if (show == null)
             {
                 return NotFound();
             }
+
+            // Load the related Film information separately
+            var film = await _context.Films.FirstOrDefaultAsync(f => f.FilmId == show.FilmId);
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == show.RoomId);
+
+            // You can use ViewData to pass the Film data to the view
+            ViewData["show"] = show;
+            ViewData["film"] = film;
+            ViewData["room"] = room;
 
             return View(show);
         }

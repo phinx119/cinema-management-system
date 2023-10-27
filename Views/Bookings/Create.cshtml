@@ -65,7 +65,8 @@
         state ? count++ : count--;
         count = Math.max(count, 0);
 
-        amountInput.value = count * price;
+        //amountInput.value = count * price;
+        amountInput.value = (count * price).toFixed(2);
     }
 </script>
 
