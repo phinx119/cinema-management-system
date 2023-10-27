@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PRN_ASG3.Models
 {
@@ -8,6 +9,7 @@ namespace PRN_ASG3.Models
         public int ShowId { get; set; }
         public int RoomId { get; set; }
         public int FilmId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ShowDate { get; set; }
         public decimal? Price { get; set; }
         public bool? Status { get; set; }

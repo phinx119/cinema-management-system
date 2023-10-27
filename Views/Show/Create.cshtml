@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    Show show = new Show();
 }
 
 <h1>Create</h1>
@@ -11,39 +12,35 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="createform">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="RoomId" class="control-label"></label>
-                <input asp-for="RoomId" class="form-control" />
-                <span asp-validation-for="RoomId" class="text-danger"></span>
+                <label asp-for="@show.FilmId" class="control-label"></label>
+                <select asp-for="@show.FilmId" class="form-control" name="filmId">
+                    @foreach (Film f in ViewBag.Films)
+                    {
+                        <option value="@f.FilmId">@f.Title</option>
+                    }
+                </select>
+                <span asp-validation-for="@show.FilmId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FilmId" class="control-label"></label>
-                <input asp-for="FilmId" class="form-control" />
-                <span asp-validation-for="FilmId" class="text-danger"></span>
+                <label asp-for="@show.Price" class="control-label"></label>
+                <input asp-for="@show.Price" class="form-control" name="price" id="price" value="0" />
+                <span asp-validation-for="@show.Price" class="text-danger" id="pricealert"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="ShowDate" class="control-label"></label>
-                <input asp-for="ShowDate" class="form-control" />
-                <span asp-validation-for="ShowDate" class="text-danger"></span>
+                <label asp-for="@show.Slot" class="control-label"></label>
+                <select asp-for="@show.Slot" class="form-control" name="slot">
+                    @foreach (int s in ViewBag.Slot)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+                <span asp-validation-for="@show.Slot" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slot" class="control-label"></label>
-                <input asp-for="Slot" class="form-control" />
-                <span asp-validation-for="Slot" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -53,6 +50,26 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    var priceInput = document.getElementById('price');
+    var createForm = document.getElementById('createform');
+    var priceValidationSpan = document.getElementById('pricealert');
+
+    priceInput.addEventListener('blur', function () {
+        var price = parseFloat(this.value);
+
+        if (isNaN(price) || price < 0 || price > 999999) {
+            priceValidationSpan.textContent = 'Price must be from 0 to 999,999.';
+            createForm.onsubmit = function (event) {
+                event.preventDefault();
+            };
+        } else {
+            priceValidationSpan.textContent = '';
+            createForm.onsubmit = null;
+        }
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
