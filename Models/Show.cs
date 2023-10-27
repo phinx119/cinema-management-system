@@ -14,6 +14,8 @@ namespace PRN_ASG3.Models
         public decimal? Price { get; set; }
         public bool? Status { get; set; }
         public int? Slot { get; set; }
+
+        public Room Room { get { return new CinemaContext().Rooms.Find(RoomId); } }
     }
 
     public class MutipleJoinClass

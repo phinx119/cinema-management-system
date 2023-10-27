@@ -1,0 +1,78 @@
+﻿@model PRN_ASG3.Models.Booking
+
+@{
+    ViewData["Title"] = "Create";
+    Boolean[,] roomMap = ViewBag.RoomMap;
+    int showId = ViewBag.ShowId;
+    decimal price = ViewBag.Price;
+}
+
+<h1>Create</h1>
+
+<h4>Booking</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+
+            <table>
+                @for (int i = 0; i < roomMap.GetLength(0); i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < roomMap.GetLength(1); j++)
+                        {
+                            <td>
+                                <input type="checkbox" name="Seats" value="@(i+"."+j)"
+                                    @(roomMap[i, j] ? "checked disabled" : "") onclick="updateAmount(this.checked)" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="ShowId" name="ShowId" type="hidden" value="@showId" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" name="Name" class="form-control" required/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" name="Amount" id="amountInput" class="form-control" value="0" readonly />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let amountInput = document.getElementById('amountInput');
+    let checkBoxList = document.querySelectorAll('checkbox');
+    let count = 0;
+    let price = @price;
+
+    function updateAmount(state) {
+        state ? count++ : count--;
+        count = Math.max(count, 0);
+
+        amountInput.value = count * price;
+    }
+</script>
+
+<div>
+    <a asp-action="Index" asp-route-id="@showId">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
