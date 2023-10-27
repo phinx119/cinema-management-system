@@ -46,7 +46,7 @@ namespace PRN_ASG3.Controllers
                           Problem("Entity set 'CinemaContext.Bookings'  is null.");
         }
 
-        public static bool ParseSeat(string input, out int a, out int b)
+        public bool ParseSeat(string input, out int a, out int b)
         {
             a = 0;
             b = 0;
@@ -79,6 +79,20 @@ namespace PRN_ASG3.Controllers
             {
                 return NotFound();
             }
+
+            Show show = booking.Show;
+            Boolean[,] roomMap = new Boolean[(int)show.Room.NumberRows, (int)show.Room.NumberCols];
+
+            string[] seats = booking.SeatStatus.Split('-');
+            foreach (string seat in seats)
+            {
+                if (ParseSeat(seat, out int a, out int b))
+                {
+                    roomMap[a, b] = true;
+                }
+            }
+
+            ViewBag.RoomMap = roomMap;
 
             return View(booking);
         }
@@ -169,6 +183,23 @@ namespace PRN_ASG3.Controllers
             {
                 return NotFound();
             }
+
+            Show show = booking.Show;
+            Boolean[,] roomMap = new Boolean[(int)show.Room.NumberRows, (int)show.Room.NumberCols];
+
+            string[] seats = booking.SeatStatus.Split('-');
+            foreach (string seat in seats)
+            {
+                if (ParseSeat(seat, out int a, out int b))
+                {
+                    roomMap[a, b] = true;
+                }
+            }
+
+            ViewBag.RoomMap = roomMap;
+            ViewBag.Price = show.Price;
+            ViewBag.Count = seats.Length;
+
             return View(booking);
         }
 
@@ -177,34 +208,41 @@ namespace PRN_ASG3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookingId,ShowId,Name,SeatStatus,Amount")] Booking booking)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != booking.BookingId)
+
+            using (var dbContext = new CinemaContext())
             {
-                return NotFound();
+                // Retrieve the existing Booking entity by its ID
+                Booking existingBooking = dbContext.Bookings.Find(id);
+
+                if (existingBooking != null)
+                {
+                    // Update the properties of the existing entity
+                    string name = Request.Form["Name"];
+                    decimal amount = Convert.ToDecimal(Request.Form["Amount"]);
+
+                    string[] selectedSeats = Request.Form["Seats"];
+                    string seatStatus = "";
+
+                    foreach (string seatValue in selectedSeats)
+                    {
+                        if (!string.IsNullOrEmpty(seatValue))
+                        {
+                            seatStatus += seatValue + "-";
+                        }
+                    }
+
+                    existingBooking.Name = name;
+                    existingBooking.Amount = amount;
+                    existingBooking.SeatStatus = seatStatus;
+
+                    // Save the changes to the database using the same context
+                    dbContext.SaveChanges();
+                }
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(booking);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookingExists(booking.BookingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(booking);
+            return RedirectToAction("Edit", "Bookings", new { id = id });
         }
 
         // GET: Bookings/Delete/5
@@ -222,6 +260,20 @@ namespace PRN_ASG3.Controllers
                 return NotFound();
             }
 
+            Show show = booking.Show;
+            Boolean[,] roomMap = new Boolean[(int)show.Room.NumberRows, (int)show.Room.NumberCols];
+
+            string[] seats = booking.SeatStatus.Split('-');
+            foreach (string seat in seats)
+            {
+                if (ParseSeat(seat, out int a, out int b))
+                {
+                    roomMap[a, b] = true;
+                }
+            }
+
+            ViewBag.RoomMap = roomMap;
+
             return View(booking);
         }
 
@@ -230,6 +282,8 @@ namespace PRN_ASG3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            int showId = new CinemaContext().Bookings.Find(id).ShowId;
+
             if (_context.Bookings == null)
             {
                 return Problem("Entity set 'CinemaContext.Bookings'  is null.");
@@ -241,7 +295,8 @@ namespace PRN_ASG3.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("Index", "Bookings", new { id = showId });
         }
 
         private bool BookingExists(int id)
