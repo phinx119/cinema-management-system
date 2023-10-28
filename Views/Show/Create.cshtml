@@ -5,6 +5,16 @@
     Show show = new Show();
 }
 
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
+
 <h1>Create</h1>
 
 <h4>Show</h4>
@@ -40,7 +50,7 @@
                 </select>
                 <span asp-validation-for="@show.Slot" class="text-danger"></span>
             </div>
-            <div class="form-group" style="margin-top: 10px">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

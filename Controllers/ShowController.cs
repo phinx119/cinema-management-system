@@ -245,6 +245,11 @@ namespace PRN_ASG3.Controllers
             var show = await _context.Shows.FindAsync(id);
             if (show != null)
             {
+                var booking = await _context.Bookings.Where(b => b.ShowId == id).ToListAsync();
+                foreach (var  book in booking)
+                {
+                    _context.Bookings.Remove(book);
+                }
                 _context.Shows.Remove(show);
             }
             

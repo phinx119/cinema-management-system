@@ -240,9 +240,9 @@ namespace PRN_ASG3.Controllers
                     // Save the changes to the database using the same context
                     dbContext.SaveChanges();
                 }
+                return RedirectToAction("Index", "Bookings", new { id = existingBooking.ShowId });
             }
 
-            return RedirectToAction("Edit", "Bookings", new { id = id });
         }
 
         // GET: Bookings/Delete/5

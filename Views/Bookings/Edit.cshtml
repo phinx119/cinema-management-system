@@ -6,6 +6,16 @@
     decimal price = ViewBag.Price;
 }
 
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
+
 <h1>Edit</h1>
 
 <h4>Booking</h4>
@@ -44,7 +54,7 @@
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -57,14 +67,13 @@
 
 <script>
     let amountInput = document.getElementById('amountInput');
-    let checkBoxList = document.querySelectorAll('checkbox');
-    let count = @ViewBag.Count;
+    let checkBoxList = document.querySelectorAll('input[type="checkbox"]');
+    let count = @ViewBag.Count - 1;
     let price = @price;
 
     function updateAmount(state) {
         state ? count++ : count--;
         count = Math.max(count, 0);
-
         amountInput.value = count * price;
     }
 </script>
