@@ -7,6 +7,16 @@
     decimal price = ViewBag.Price;
 }
 
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
+
 <h1>Create</h1>
 
 <h4>Booking</h4>
@@ -48,7 +58,7 @@
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

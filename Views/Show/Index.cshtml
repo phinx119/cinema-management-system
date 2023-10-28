@@ -6,6 +6,16 @@
     Show show = new Show();
 }
 
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
+
 <h1>Index</h1>
 
 <div class="row">
@@ -34,7 +44,7 @@
                     }
                 </select>
             </div>            
-            <div class="form-group" style="margin-top: 10px">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px">
                 <input type="submit" value="Search" class="btn btn-primary" />
             </div>
         </form>
@@ -90,12 +100,15 @@
                 @Html.DisplayFor(modelItem => item.film.Title)
             </td>
             <td>
-                <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.show.ShowId">Bookings</a>
-                    @if (user!=null)
+                    <a asp-controller="Bookings" asp-action="Index" asp-route-id="@item.show.ShowId">Bookings</a>
+                    @if (user != null)
                     {
-                        <a asp-controller ="Show" asp-action="Edit" asp-route-id="@item.show.ShowId"> | Edit</a>
-                        <a asp-controller="Show" asp-action="Details" asp-route-id="@item.show.ShowId"> | Details</a>
-                        <a asp-controller="Show" asp-action="Delete" asp-route-id="@item.show.ShowId"> | Delete</a>
+                        <a asp-controller="Show" asp-action="Edit" asp-route-id="@item.show.ShowId"> Edit</a>
+                    }
+                    <a asp-controller="Show" asp-action="Details" asp-route-id="@item.show.ShowId"> Details</a>
+                    @if (user != null)
+                    {
+                        <a asp-controller="Show" asp-action="Delete" asp-route-id="@item.show.ShowId"> Delete</a>
                     }
             </td>
         </tr>

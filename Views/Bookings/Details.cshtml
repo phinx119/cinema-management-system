@@ -2,14 +2,24 @@
 
 @{
     ViewData["Title"] = "Details";
+    var user = Context.Session.GetString("user");
     Boolean[,] roomMap = ViewBag.RoomMap;
 }
+
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
 
 <h1>Details</h1>
 
 <div>
     <h4>Booking</h4>
-    <hr />
 
     <table>
         @for (int i = 0; i < roomMap.GetLength(0); i++)
@@ -24,6 +34,8 @@
             </tr>
         }
     </table>
+
+    <hr />
 
     <dl class="row">
 
@@ -44,6 +56,9 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.BookingId">Edit</a> |
+    @if (user != null)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.BookingId">Edit | </a>
+    }
     <a asp-action="Index" asp-route-id="@Model?.ShowId">Back to List</a>
 </div>

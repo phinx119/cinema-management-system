@@ -2,10 +2,21 @@
 
 @{
     ViewData["Title"] = "Details";
+    var user = Context.Session.GetString("user");
     var show = Model;
     var film = ViewData["film"] as PRN_ASG3.Models.Film;
     var room = ViewData["room"] as PRN_ASG3.Models.Room;
 }
+
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        background-color: #fbf9ef;
+    }
+</style>
 
 <h1>Details</h1>
 
@@ -46,6 +57,9 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ShowId">Edit</a> |
+    @if (user != null)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.ShowId">Edit | </a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
